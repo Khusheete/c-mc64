@@ -14,8 +14,10 @@ import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 
 import java.util.regex.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipInputStream;
 
-import interpreter.Program;
+import NBT.*;
 
 
 class Main {
@@ -55,8 +57,9 @@ class Main {
 
             //read src
             String src = "";
+            File f = new File(args[0]);
 
-            try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(new File(args[0])))) {
+            try (BufferedInputStream stream = new BufferedInputStream(new GZIPInputStream(new FileInputStream(f)))) {
                 src = new String(stream.readAllBytes());
             } catch (FileNotFoundException e) {
                 System.err.println("The file " + args[0] + " does not exist");
@@ -65,31 +68,20 @@ class Main {
                 e.printStackTrace();
             }
 
+            System.out.println(NbtTag.parse(src.getBytes()));
+
             if (mode.compareTo("interpret") == 0) {
-                src = clean(src);
-                Program p = new Program(src, version);
-                p.run();
+                
+                
             } else if (mode.compareTo("verify") == 0) {
-                src = clean(src);
-                new Program(src, version);
+                
+                
                 System.exit(0);
             } else if (mode.compareTo("compile") == 0) {
 
             }
 
         }
-    }
-
-    /** 
-     * cleans the program for verification or interpretation
-     * @return a clean version of the src
-    */
-    private static String clean(String src) {
-        String result;
-        //remove the comments but let an empty line to have the line count correct
-        Pattern comments = Pattern.compile("\\p{Blank}*//\\p{Print}*");
-        result = comments.matcher(src).replaceAll("");
-        return result;
     }
 
     private static void showHelp() {
