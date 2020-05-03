@@ -33,57 +33,58 @@ public abstract class NbtTag {
 	
 	public static NbtTag parse(byte[] tag) {
 		switch (tag[0]) {
-		case 1:
+		case 1: //byte
 			{
 				int nameLength = getNameLength(tag);
 				return new TagByte(getTagName(tag, nameLength), tag[3 + nameLength]);
 			}
-		case 2:
+		case 2: //short
 			{
 				int nameLength = getNameLength(tag);
 				return new TagShort(getTagName(tag, nameLength), ByteBuffer.wrap(tag, 3 + nameLength, Short.BYTES).getShort());
 			}
-		case 3:
+		case 3: //int
 			{
 				int nameLength = getNameLength(tag);
 				return new TagInt(getTagName(tag, nameLength), ByteBuffer.wrap(tag, 3 + nameLength, Integer.BYTES).getInt());
 			}
-		case 4:
+		case 4: //long
 			{
 				int nameLength = getNameLength(tag);
 				return new TagLong(getTagName(tag, nameLength), ByteBuffer.wrap(tag, 3 + nameLength, Long.BYTES).getLong());
 			}
-		case 5:
+		case 5: //float
 			{
 				int nameLength = getNameLength(tag);
 				return new TagFloat(getTagName(tag, nameLength), ByteBuffer.wrap(tag, 3 + nameLength, Float.BYTES).getFloat());
 			}
-		case 6:
+		case 6: //double
 			{
 				int nameLength = getNameLength(tag);
 				return new TagDouble(getTagName(tag, nameLength), ByteBuffer.wrap(tag, 3 + nameLength, Double.BYTES).getDouble());
 			}
-		case 7:
+		case 7: //byte array
 			{
 				int nameLength = getNameLength(tag);
 				int arrayLength = ByteBuffer.wrap(tag, 3 + nameLength, Integer.BYTES).getInt();
 				byte[] array = Arrays.copyOfRange(tag, Integer.BYTES + 3 + nameLength, Integer.BYTES + 3 + nameLength + arrayLength);
 				return new TagByteArray(getTagName(tag, nameLength), array);
 			}
-		case 8:
+		case 8: //string
 			{
 				int nameLength = getNameLength(tag);
 				short stringLength = ByteBuffer.wrap(tag, 3 + nameLength, Short.BYTES).getShort();
-				String content = new String(Arrays.copyOfRange(tag, 5 + nameLength, 5 + nameLength + stringLength));
+				String content = "";
+				try { content = new String(Arrays.copyOfRange(tag, 5 + nameLength, 5 + nameLength + stringLength), "UTF-8"); } catch (Exception e) { throw new InvalidNbtException("Strings in nbt data must be encoded in UTF-8"); }
 				return new TagString(getTagName(tag, nameLength), content);
 			}
-		case 9:
+		case 9: //list
 			{
 				int nameLength = getNameLength(tag);
 				int i = 4 + nameLength + Integer.BYTES;
 				byte typeId = tag[3 + nameLength];
 				if (typeId == 0) 
-					return new TagList(new NbtTag[0]);
+					return new TagList(getTagName(tag, nameLength), new NbtTag[0]);
 				int length = ByteBuffer.wrap(tag, i - Integer.BYTES, Integer.BYTES).getInt();
 				NbtTag[] list = new NbtTag[length];
 				
@@ -97,14 +98,13 @@ public abstract class NbtTag {
 
 				return new TagList(getTagName(tag, nameLength), list);
 			}
-		case 10:
+		case 10: //compound
 			{
 				int nameLength = getNameLength(tag);
 				List<NbtTag> list = new ArrayList<NbtTag>();
-				
+
 				int i = 3 + nameLength;
 				while (i < tag.length) {
-					System.out.println(tag[i]);
 					if (tag[i] == 0) break;
 					NbtTag newTag = parse(Arrays.copyOfRange(tag, i, tag.length));
 					i += newTag.getLength();
@@ -113,7 +113,7 @@ public abstract class NbtTag {
 
 				return new TagCompound(getTagName(tag, nameLength), list);
 			}
-		case 11:
+		case 11: //int array
 			{
 				int nameLength = getNameLength(tag);
 				int arrayLength = ByteBuffer.wrap(tag, 3 + nameLength, Integer.BYTES).getInt();
@@ -124,7 +124,7 @@ public abstract class NbtTag {
 				}
 				return new TagIntArray(getTagName(tag, nameLength), array);
 			}
-		case 12:
+		case 12: //long array
 			{
 				int nameLength = getNameLength(tag);
 				int arrayLength = ByteBuffer.wrap(tag, 3 + nameLength, Integer.BYTES).getInt();

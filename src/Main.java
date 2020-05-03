@@ -8,6 +8,7 @@
 */
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.io.FileNotFoundException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,11 +57,11 @@ class Main {
             }
 
             //read src
-            String src = "";
+            byte[] src = new byte[0];
             File f = new File(args[0]);
 
             try (BufferedInputStream stream = new BufferedInputStream(new GZIPInputStream(new FileInputStream(f)))) {
-                src = new String(stream.readAllBytes());
+                src = stream.readAllBytes();
             } catch (FileNotFoundException e) {
                 System.err.println("The file " + args[0] + " does not exist");
                 System.err.println("if you need help try: mc64 --");
@@ -68,7 +69,7 @@ class Main {
                 e.printStackTrace();
             }
 
-            System.out.println(NbtTag.parse(src.getBytes()));
+            System.out.println(NbtTag.parse(src));
 
             if (mode.compareTo("interpret") == 0) {
                 
