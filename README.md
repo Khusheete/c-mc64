@@ -17,8 +17,3 @@ mc64 [file] [args]
 
 -out=(file)
     sets the output file (default: ./prog.mcfunction) if there is no .mcfunction at the end, it will be automaticly append
-
--v(version)
-    changes the mc64 version
-    supported versions:
-        1.1.2 (default)
