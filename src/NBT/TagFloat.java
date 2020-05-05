@@ -22,8 +22,23 @@ public class TagFloat extends NbtTag {
 		return this.value;
 	}
 	
-	public void setValue(float value) {
-		this.value = value;
+	@Override
+	public void set(String path, Object value) {
+		throw new NbtException("Cannot set value with path for a TagFloat");
+	}
+
+	@Override
+	public NbtTag get(String path) {
+		throw new NbtException("Cannot get value with path for a TagFloat");
+	}
+
+	@Override
+	public void set(Object value) {
+		if (value instanceof Float) {
+			this.value = (Float)value;
+		} else {
+			throw new InvalidDataType(value.getClass(), Float.class);
+		}
 	}
 
 	@Override

@@ -22,6 +22,10 @@ public abstract class NbtTag {
 	public abstract Object getValue();
 	public abstract byte getId();
 	public abstract int getLength();
+
+	public abstract NbtTag get(String path);
+	public abstract void set(String path, Object value);
+	public abstract void set(Object value);
 	
 	/**SNBT String*/
 	public abstract String toString();

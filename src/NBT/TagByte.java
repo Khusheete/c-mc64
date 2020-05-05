@@ -23,10 +23,6 @@ public class TagByte extends NbtTag {
 		return value;
 	}
 
-	public void setValue(byte value) {
-		this.value = value;
-	}
-
 	@Override
 	public String toString() {
 		return ((this.name.length() > 0)? this.name + ":" : "") + this.getValueAsString();
@@ -40,6 +36,25 @@ public class TagByte extends NbtTag {
 	@Override
 	public int getLength() {
 		return 3 + this.name.length() + this.getNBTValueLength();
+	}
+
+	@Override
+	public void set(String path, Object value) {
+		throw new NbtException("Cannot set value with path for a TagByte");
+	}
+
+	@Override
+	public NbtTag get(String path) {
+		throw new NbtException("Cannot get value with path for a TagByte");
+	}
+
+	@Override
+	public void set(Object value) {
+		if (value instanceof Byte) {
+			this.value = (Byte)value;
+		} else {
+			throw new InvalidDataType(value.getClass(), Byte.class);
+		}
 	}
 
 	@Override

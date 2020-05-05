@@ -22,8 +22,23 @@ public class TagInt extends NbtTag {
 		return this.value;
 	}
 	
-	public void setValue(int value) {
-		this.value = value;
+	@Override
+	public void set(String path, Object value) {
+		throw new NbtException("Cannot set value with path for a TagInt");
+	}
+
+	@Override
+	public NbtTag get(String path) {
+		throw new NbtException("Cannot get value with path for a TagInt");
+	}
+
+	@Override
+	public void set(Object value) {
+		if (value instanceof Integer) {
+			this.value = (Integer)value;
+		} else {
+			throw new InvalidDataType(value.getClass(), Integer.class);
+		}
 	}
 	
 	@Override

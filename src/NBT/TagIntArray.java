@@ -22,16 +22,40 @@ public class TagIntArray extends NbtTag {
 		return this.value;
 	}
 	
-	public void setValue(int[] value) {
-		this.value = value;
+	@Override
+	public void set(Object value) {
+		if (value instanceof Integer[]) {
+			Integer[] vals = (Integer[])value;
+			this.value = new int[vals.length];
+			for (int i = 0; i < vals.length; i++) {
+				this.value[i] = vals[i];
+			}
+		} else {
+			throw new InvalidDataType(value.getClass(), Integer[].class);
+		}
+	}
+
+	@Override
+	public void set(String path, Object value) {
+		if (value instanceof Integer) {
+			int index = Integer.parseInt(path);
+			this.set(index, (Integer)value);
+		} else {
+			throw new InvalidDataType(value.getClass(), Integer.class);
+		}
+	}
+
+	public int get(int index) {
+		return this.value[index];
 	}
 	
 	public void set(int index, int value) {
 		this.value[index] = value;
 	}
-	
-	public int get(int index) {
-		return this.value[index];
+
+	@Override
+	public NbtTag get(String path) {
+		throw new NbtException("Cannot get value with path for a TagIntArray");
 	}
 
 	@Override

@@ -22,8 +22,23 @@ public class TagLong extends NbtTag {
 		return this.value;
 	}
 	
-	public void setValue(long value) {
-		this.value = value;
+	@Override
+	public void set(String path, Object value) {
+		throw new NbtException("Cannot set value with path for a TagLong");
+	}
+
+	@Override
+	public NbtTag get(String path) {
+		throw new NbtException("Cannot get value with path for a TagLong");
+	}
+
+	@Override
+	public void set(Object value) {
+		if (value instanceof Long) {
+			this.value = (Long)value;
+		} else {
+			throw new InvalidDataType(value.getClass(), Long.class);
+		}
 	}
 
 	@Override

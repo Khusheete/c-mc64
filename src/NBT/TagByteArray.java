@@ -17,6 +17,35 @@ public class TagByteArray extends NbtTag {
 		this.value = value;
 	}
 	
+	@Override
+	public void set(Object value) {
+		if (value instanceof Byte[]) {
+			Byte[] vals = (Byte[])value;
+			this.value = new byte[vals.length];
+			for (int i = 0; i < vals.length; i++) {
+				this.value[i] = vals[i];
+			}
+		} else {
+			throw new InvalidDataType(value.getClass(), Byte[].class);
+		}
+	}
+
+	@Override
+	public void set(String path, Object value) {
+		if (value instanceof Byte) {
+			int index = Integer.parseInt(path);
+			this.set(index, (Byte)value);
+		} else {
+			throw new InvalidDataType(value.getClass(), Byte.class);
+		}
+	}
+
+	@Override
+	public NbtTag get(String path) {
+		throw new NbtException("Cannot get value with path for a TagByteArray");
+	}
+
+
 	public byte get(int index) {
 		return this.value[index];
 	}
@@ -28,10 +57,6 @@ public class TagByteArray extends NbtTag {
 	@Override
 	public byte[] getValue() {
 		return value;
-	}
-	
-	public void setValue(byte[] value) {
-	this.value = value;
 	}
 
 	@Override

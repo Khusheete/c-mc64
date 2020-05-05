@@ -65,8 +65,28 @@ public class TagList extends NbtTag {
 		return this.value;
 	}
 	
-	public void setValue(NbtTag[] value) {
-		this.value = Arrays.asList(value);
+	@Override
+	public NbtTag get(String path) {
+		String[] pth = path.split("\\.", 2);
+		if (pth.length == 2)
+			return this.value.get(Integer.parseInt(pth[0])).get(pth[1]);
+		else
+			return this.value.get(Integer.parseInt(pth[0]));
+	}
+
+	@Override
+	public void set(String path, Object value) {
+		String[] pth = path.split("\\.", 2);
+		int index = Integer.parseInt(pth[0]);
+		if (pth.length == 2)
+			this.value.get(index).set(pth[1], value);
+		else
+			this.value.get(index).set(value);
+	}
+
+	@Override
+	public void set(Object value) {
+		throw new NbtException("Cannot set value of a TagList");
 	}
 
 	@Override

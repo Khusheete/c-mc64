@@ -34,15 +34,49 @@ public class TagCompound extends NbtTag {
 	public List<NbtTag> getValue() {
 		return this.value;
 	}
-	
-	public void setValue(List<NbtTag> value) {
-		this.value = value;
+
+	@Override
+	public void set(String path, Object value) {
+		String[] pth = path.split("\\.", 2);
+		for (NbtTag tag : this.value) {
+			if (tag.getName() == pth[0]) {
+				if (pth.length == 2)
+					tag.set(pth[1], value);
+				else
+					tag.set(value);
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void set(Object value) {
+		if (value instanceof List) {
+			List<?> v = (List<?>)value;
+			this.value = new ArrayList<NbtTag>();
+			if (v.size() > 0) {
+				if (!(v.get(0) instanceof NbtTag))
+					throw new InvalidDataType(v.get(0).getClass(), NbtTag.class);
+				for (int i = 0; i < v.size(); i++) {
+					this.value.add((NbtTag)v.get(i));
+				}
+			}
+		} else {
+			throw new InvalidDataType(value.getClass(), List.class);
+		}
 	}
 	
-	public NbtTag get(String name) {
-		for (NbtTag nbt : this.value)
-			if (nbt.getName().equals(name))
-				return nbt;
+	@Override
+	public NbtTag get(String path) {
+		String[] pth = path.split("\\.", 2);
+		for (NbtTag tag : this.value) {
+			if (tag.getName() == pth[0]) {
+				if (pth.length == 2)
+					return (NbtTag)tag.get(pth[1]);
+				else
+					return tag;
+			}
+		}
 		return null;
 	}
 	
@@ -56,16 +90,6 @@ public class TagCompound extends NbtTag {
 	public void add(NbtTag nbt) {
 		if (!this.hasValue(nbt.getName()))
 			this.value.add(nbt);
-	}
-	
-	public void set(NbtTag nbt) {
-		for (int i = 0; i < this.value.size(); i++) {
-			NbtTag tag = this.value.get(i);
-			if (tag.getName().equals(nbt.getName())) {
-				this.value.set(i, nbt);
-				break;
-			}
-		}
 	}
 	
 	public void remove(String name) {

@@ -22,8 +22,23 @@ public class TagShort extends NbtTag {
 		return value;
 	}
 	
-	public void setValue(short value) {
-		this.value = value;
+	@Override
+	public void set(String path, Object value) {
+		throw new NbtException("Cannot set value with path for a TagShort");
+	}
+
+	@Override
+	public NbtTag get(String path) {
+		throw new NbtException("Cannot get value with path for a TagShort");
+	}
+
+	@Override
+	public void set(Object value) {
+		if (value instanceof Short) {
+			this.value = (Short)value;
+		} else {
+			throw new InvalidDataType(value.getClass(), Short.class);
+		}
 	}
 
 	@Override
