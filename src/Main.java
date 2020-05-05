@@ -8,7 +8,6 @@
 */
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.io.FileNotFoundException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,9 +15,7 @@ import java.io.BufferedInputStream;
 
 import java.util.regex.*;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipInputStream;
-
-import NBT.*;
+import java.util.zip.ZipException;
 
 
 class Main {
@@ -41,35 +38,26 @@ class Main {
             {
                 Pattern pMode = Pattern.compile("-mode=(interpret|compile|verify)");
                 Pattern pOut = Pattern.compile("-out=(.+)");
-                Pattern pVersion = Pattern.compile("-v(\\p{Digit}+\\.\\p{Digit}+\\.\\p{Digit}+)");
                 for (int i = 1; i < args.length; i++) {
                     String arg = args[i];
                     Matcher m;
-                    if ((m = pMode.matcher(arg)).find()) {
+                    if ((m = pMode.matcher(arg)).find()) { //-mode=
                         mode = m.group(1);
-                    } else if ((m = pOut.matcher(arg)).find()) {
+                    } else if ((m = pOut.matcher(arg)).find()) { //-out=
                         output = m.group(1);
-                    }
-                    else if ((m = pVersion.matcher(arg)).find()) {
-                        version = m.group(1);
                     }
                 }
             }
 
             //read src
-            byte[] src = new byte[0];
             File f = new File(args[0]);
+            byte[] src = readFile(f);
 
-            try (BufferedInputStream stream = new BufferedInputStream(new GZIPInputStream(new FileInputStream(f)))) {
-                src = stream.readAllBytes();
-            } catch (FileNotFoundException e) {
-                System.err.println("The file " + args[0] + " does not exist");
-                System.err.println("if you need help try: mc64 --");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            //gets the extention, will crash if there is no extention
+            String ext = f.getName().split(".*\\.")[1];
 
-            System.out.println(NbtTag.parse(src));
+            //get the Translator
+            Translator trans = new Translator(src, ext);
 
             if (mode.compareTo("interpret") == 0) {
                 
@@ -85,12 +73,45 @@ class Main {
         }
     }
 
+    /**
+     * Prints the help to the console (yes, help is README.md)
+     */
     private static void showHelp() {
         try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(new File("README.md")))) {
             System.out.println(new String(stream.readAllBytes()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * This function will read the given file
+     * 
+     * @param f - the file to read from
+     * @return the content of the file
+     */
+    private static byte[] readFile(File f) {
+        //GZIP compressed file
+        try (BufferedInputStream stream = new BufferedInputStream(new GZIPInputStream(new FileInputStream(f)))) {
+            return stream.readAllBytes();
+            //return new String(stream.readAllBytes(), "UTF-8");
+        } catch (FileNotFoundException e) {
+            System.err.println("The file " + f.getAbsolutePath() + " does not exist");
+            System.err.println("if you need help try: mc64 --");
+        } catch (ZipException e) {
+            //the file is not a GZIP compressed file so continue
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //read the normal file
+        try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(f))) {
+            return stream.readAllBytes();
+            //return new String(stream.readAllBytes(), "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //should never get here (I think) so whatever
+        return null;
     }
 
 }
