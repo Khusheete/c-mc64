@@ -2,12 +2,23 @@ package NBT;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.ArrayList;
 
 public class TagCompound extends NbtTag {
 	
 	private static final byte ID = 0b1010;
 	private List<NbtTag> value;
 	
+	public TagCompound() {
+		this.name = "";
+		this.value = new ArrayList<NbtTag>();
+	}
+
+	public TagCompound(String name) {
+		this.name = name;
+		this.value = new ArrayList<NbtTag>();
+	}
+
 	public TagCompound(List<NbtTag> value) {
 		this.name = "";
 		this.value = value;
