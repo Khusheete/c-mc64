@@ -17,6 +17,8 @@ import java.util.regex.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipException;
 
+import translation.Translator;
+
 
 class Main {
 
