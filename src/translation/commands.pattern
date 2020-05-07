@@ -1,0 +1,5 @@
+comment:
+pattern = //(<string=100>)
+cmd = 1
+parameter.0.type = 2
+parameter.0.name = g1
