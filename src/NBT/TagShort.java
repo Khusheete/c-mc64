@@ -42,6 +42,11 @@ public class TagShort extends NbtTag {
 	}
 
 	@Override
+	public NbtTag copy() {
+		return new TagShort(this.name, this.value);
+	}
+
+	@Override
 	protected Class<?> getType() {
 		return Short.class;
 	}

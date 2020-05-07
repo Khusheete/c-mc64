@@ -26,6 +26,7 @@ public abstract class NbtTag {
 	public abstract NbtTag get(String path);
 	public abstract void set(String path, Object value);
 	public abstract void set(Object value);
+	public abstract NbtTag copy();
 
 	protected abstract Class<?> getType();
 	

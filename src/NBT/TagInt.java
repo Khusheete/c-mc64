@@ -42,6 +42,11 @@ public class TagInt extends NbtTag {
 	}
 
 	@Override
+	public NbtTag copy() {
+		return new TagInt(this.name, this.value);
+	}
+
+	@Override
 	protected Class<?> getType() {
 		return Integer.class;
 	}

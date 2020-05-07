@@ -58,6 +58,11 @@ public class TagByte extends NbtTag {
 	}
 
 	@Override
+	public NbtTag copy() {
+		return new TagByte(this.name, this.value);
+	}
+
+	@Override
 	protected Class<?> getType() {
 		return Byte.class;
 	}

@@ -52,6 +52,11 @@ public class TagLongArray extends NbtTag {
 	}
 
 	@Override
+	public NbtTag copy() {
+		return new TagLongArray(this.name, this.value.clone());
+	}
+
+	@Override
 	protected Class<?> getType() {
 		return Long[].class;
 	}

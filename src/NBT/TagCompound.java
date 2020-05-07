@@ -93,6 +93,12 @@ public class TagCompound extends NbtTag {
 	}
 
 	@Override
+	public NbtTag copy() {
+		return new TagCompound(this.name, new ArrayList<NbtTag>(this.value));
+
+	}
+
+	@Override
 	protected Class<?> getType() {
 		return List.class;
 	}

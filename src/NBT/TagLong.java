@@ -42,6 +42,11 @@ public class TagLong extends NbtTag {
 	}
 
 	@Override
+	public NbtTag copy() {
+		return new TagLong(this.name, this.value);
+	}
+
+	@Override
 	protected Class<?> getType() {
 		return Long.class;
 	}

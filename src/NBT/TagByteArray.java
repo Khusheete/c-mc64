@@ -50,6 +50,11 @@ public class TagByteArray extends NbtTag {
 		return Byte[].class;
 	}
 
+	@Override
+	public NbtTag copy() {
+		return new TagByteArray(this.name, this.value.clone());
+	}
+
 
 	public byte get(int index) {
 		return this.value[index];

@@ -45,6 +45,11 @@ public class TagIntArray extends NbtTag {
 		}
 	}
 
+	@Override
+	public NbtTag copy() {
+		return new TagIntArray(this.name, this.value.clone());
+	}
+
 	public int get(int index) {
 		return this.value[index];
 	}

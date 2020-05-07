@@ -42,6 +42,11 @@ public class TagDouble extends NbtTag {
 	}
 
 	@Override
+	public NbtTag copy() {
+		return new TagDouble(this.name, this.value);
+	}
+
+	@Override
 	protected Class<?> getType() {
 		return Double.class;
 	}
