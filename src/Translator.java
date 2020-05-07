@@ -62,6 +62,7 @@ public class Translator {
                         if (lines[i].isBlank()) continue;
                         try {
                         System.out.println(parseLine(lines[i]));
+                        program.set("" + i, parseLine(lines[i]));
                         } catch (Exception e) {
                             System.err.println("Error line " + i + ":\n" + "\"" + lines[i] + "\"");
                             System.err.println(e.getMessage());
@@ -109,8 +110,9 @@ public class Translator {
             String comment = m.group(1);
             if (comment.length() > 100) throw new RuntimeException("Comments cannot be more than 100 characters");
             cmd.set(new TagInt("cmd", 1));
-            cmd.set(new TagInt("type", 2)); //TODO change to parameters.type
-            cmd.set(stringToList(comment, "name", 100));
+            cmd.set("parameters.0", new TagInt("type", 2));
+            cmd.set("parameters.0", stringToList(comment, "name", 100));
+            return cmd;
         }
         //TODO else throw exception
         return null;
@@ -118,7 +120,7 @@ public class Translator {
 
     private static TagList stringToList(String str, String name, int length) {
         TagList result = new TagList(name);
-        for (char c : name.toCharArray()) {
+        for (char c : str.toCharArray()) {
             result.append(new TagString("" + c));
         }
         for (int i = str.length(); i < length; i++) {
