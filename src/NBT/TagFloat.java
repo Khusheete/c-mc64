@@ -42,6 +42,11 @@ public class TagFloat extends NbtTag {
 	}
 
 	@Override
+	protected Class<?> getType() {
+		return Float.class;
+	}
+
+	@Override
 	public byte getId() {
 		return ID;
 	}

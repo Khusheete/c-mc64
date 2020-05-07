@@ -40,6 +40,11 @@ public class TagInt extends NbtTag {
 			throw new InvalidDataType(value.getClass(), Integer.class);
 		}
 	}
+
+	@Override
+	protected Class<?> getType() {
+		return Integer.class;
+	}
 	
 	@Override
 	public byte getId() {

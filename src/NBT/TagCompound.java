@@ -39,19 +39,31 @@ public class TagCompound extends NbtTag {
 	public void set(String path, Object value) {
 		String[] pth = path.split("\\.", 2);
 		for (NbtTag tag : this.value) {
-			if (tag.getName() == pth[0]) {
+			if (tag.getName().equals(pth[0])) {
 				if (pth.length == 2)
 					tag.set(pth[1], value);
 				else
 					tag.set(value);
-				break;
+				return;
 			}
 		}
+		throw new NbtException("No value named " + pth[0] + " has been found");
 	}
 
 	@Override
 	public void set(Object value) {
-		if (value instanceof List) {
+		if (value instanceof NbtTag) {
+			NbtTag tag = ((NbtTag)value);
+			for (int i = 0; i < this.value.size(); i++) {
+				NbtTag val = this.value.get(i);
+				if (tag.getName().equals(val.getName())) {
+					if (val.getId() != tag.getId())
+						throw new InvalidDataType(tag.getClass(), val.getClass());
+					this.value.set(i, tag);
+					return;
+				}
+			}
+		} else if (value instanceof List) {
 			List<?> v = (List<?>)value;
 			this.value = new ArrayList<NbtTag>();
 			if (v.size() > 0) {
@@ -78,6 +90,11 @@ public class TagCompound extends NbtTag {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	protected Class<?> getType() {
+		return List.class;
 	}
 	
 	public boolean hasValue(String name) {

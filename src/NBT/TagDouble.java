@@ -42,6 +42,11 @@ public class TagDouble extends NbtTag {
 	}
 
 	@Override
+	protected Class<?> getType() {
+		return Double.class;
+	}
+
+	@Override
 	public byte getId() {
 		return ID;
 	}

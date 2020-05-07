@@ -58,6 +58,11 @@ public class TagByte extends NbtTag {
 	}
 
 	@Override
+	protected Class<?> getType() {
+		return Byte.class;
+	}
+
+	@Override
 	public byte[] toNBTFormat() {
 		ByteBuffer b = ByteBuffer.allocate(this.getLength());
 		b.put(ID).putShort((short) this.name.length()).put(this.name.getBytes()).put(this.value);

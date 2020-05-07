@@ -42,6 +42,11 @@ public class TagShort extends NbtTag {
 	}
 
 	@Override
+	protected Class<?> getType() {
+		return Short.class;
+	}
+
+	@Override
 	public byte getId() {
 		return ID;
 	}

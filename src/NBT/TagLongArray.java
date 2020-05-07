@@ -50,6 +50,11 @@ public class TagLongArray extends NbtTag {
 	public NbtTag get(String path) {
 		throw new NbtException("Cannot get value with path for a TagLongArray");
 	}
+
+	@Override
+	protected Class<?> getType() {
+		return Long[].class;
+	}
 	
 	public void set(int index, long value) {
 		this.value[index] = value;

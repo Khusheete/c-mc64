@@ -59,6 +59,11 @@ public class TagIntArray extends NbtTag {
 	}
 
 	@Override
+	protected Class<?> getType() {
+		return Integer[].class;
+	}
+
+	@Override
 	public byte getId() {
 		return ID;
 	}

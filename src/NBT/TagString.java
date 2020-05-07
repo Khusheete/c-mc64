@@ -42,6 +42,11 @@ public class TagString extends NbtTag {
 	}
 
 	@Override
+	protected Class<?> getType() {
+		return String.class;
+	}
+
+	@Override
 	public byte getId() {
 		return ID;
 	}

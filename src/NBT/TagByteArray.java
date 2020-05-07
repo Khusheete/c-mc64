@@ -45,6 +45,11 @@ public class TagByteArray extends NbtTag {
 		throw new NbtException("Cannot get value with path for a TagByteArray");
 	}
 
+	@Override
+	protected Class<?> getType() {
+		return Byte[].class;
+	}
+
 
 	public byte get(int index) {
 		return this.value[index];

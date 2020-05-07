@@ -80,13 +80,19 @@ public class TagList extends NbtTag {
 		int index = Integer.parseInt(pth[0]);
 		if (pth.length == 2)
 			this.value.get(index).set(pth[1], value);
-		else
+		else {
 			this.value.get(index).set(value);
+		}
 	}
 
 	@Override
 	public void set(Object value) {
 		throw new NbtException("Cannot set value of a TagList");
+	}
+
+	@Override
+	protected Class<?> getType() {
+		return List.class;
 	}
 
 	@Override

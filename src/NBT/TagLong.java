@@ -42,6 +42,11 @@ public class TagLong extends NbtTag {
 	}
 
 	@Override
+	protected Class<?> getType() {
+		return Long.class;
+	}
+
+	@Override
 	public byte getId() {
 		return ID;
 	}
