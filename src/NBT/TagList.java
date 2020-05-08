@@ -87,7 +87,19 @@ public class TagList extends NbtTag {
 
 	@Override
 	public void set(Object value) {
-		throw new NbtException("Cannot set value of a TagList");
+		if (value instanceof List) {
+			List<?> val = (List<?>)value;
+			if (val.size() == 0)
+				return;
+			if (!(val.get(0) instanceof NbtTag))
+				throw new InvalidDataType(val.get(0).getClass(), NbtTag.class);
+			this.value = new ArrayList<NbtTag>();
+			for (Object tag : val) {
+				this.value.add((NbtTag)tag);
+			}
+		} else {
+			throw new InvalidDataType(value.getClass(), List.class);
+		}
 	}
 
 	@Override
