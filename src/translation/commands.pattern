@@ -1,5 +1,332 @@
 comment:
 pattern = //(<string=100>)
 cmd = 1
-parameter.0.type = 2
-parameter.0.name = g1
+parameters.0.type = 2
+parameters.0.name = g1[100]
+
+
+decl:
+pattern = decl (<variable>)
+cmd = 2
+parameters.0.type = 2
+parameters.0.name = g1[10]
+
+
+if:
+pattern = (?:IF|if|If) *\( *(<value=10>) *(=|>|<|>=|<=|!=) *(<value=10>) *\)
+cmd = 6
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+mod = g2{>, >=, =, !=, <=, <}
+parameters.1.type = g3.type
+parameters.1.name = g3[10]
+
+
+if_cntr:
+pattern = (?:IF|if|If) *\( *cntr\.(up|down|left|right) *\)
+cmd = 6
+mod = g1{up, down, left, right}
+
+
+else:
+pattern = ELSE|else|Else
+cmd = 4
+
+
+ifend:
+pattern = IFEND|ifend|Ifend|Ifend
+cmd = 8
+
+
+while:
+pattern = (?:WHILE|while|While) *\( *(<value=10>) *(=|>|<|>=|<=|!=) *(<value=10>) *\)
+cmd = 7
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+mod = g2{>, >=, =, !=, <=, <}
+parameters.1.type = g3.type
+parameters.1.name = g3[10]
+
+
+while_cntr:
+pattern = (?:WHILE|while|While) *\( *cntr\.(up|down|left|right) *\)
+cmd = 7
+mod = g1{up, down, left, right}
+
+
+wend:
+pattern = WEND|wend|Wend
+cmd = 9
+
+
+wait:
+pattern = (?:WAIT|Wait|wait) (<value=10>)
+cmd = 11
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+
+func:
+pattern = (<variable>) *\( *(?:(\*a)?(?: *, *(\*b)(?: *, *(\*c)(?: *, *(\*d)(?: *, *(\*e)(?: *, *(\*f))?)?)?)?)?) *\)
+cmd = 3
+mod = 0
+mod = g2 -> 1
+mod = g3 -> 2
+mod = g4 -> 3
+mod = g5 -> 4
+mod = g6 -> 5
+mod = g7 -> 6
+parameters.0.type = 2
+parameters.0.name = g1[10]
+
+return:
+pattern = (?:RETURN|Return|return) (<value=10>)
+cmd = 12
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+
+call:
+pattern = (?:CALL|call|Call) (<variable>) *\( *(<value=10>)?(?: *, *(<value=10>))?(?: *, *(<value=10>))?(?: *, *(<value=10>))?(?: *, *(<value=10>))?(?: *, *(<value=10>))? *\)
+cmd = 13
+mod = 0
+mod = g2 -> 1
+mod = g3 -> 2
+mod = g4 -> 3
+mod = g5 -> 4
+mod = g6 -> 5
+mod = g7 -> 6
+parameters.0.type = 2
+parameters.0.name = g1[10]
+
+parameters.1.type = g2.type
+parameters.1.name = g2[10]
+parameters.2.type = g3.type
+parameters.2.name = g3[10]
+parameters.3.type = g4.type
+parameters.3.name = g4[10]
+parameters.4.type = g5.type
+parameters.4.name = g5[10]
+parameters.5.type = g6.type
+parameters.5.name = g6[10]
+parameters.6.type = g7.type
+parameters.6.name = g7[10]
+
+
+var_eq:
+pattern = (<variable>) *(\+|-|/|\*|%)?= *(<value=10>)
+cmd = 100
+mod = 0
+mod = g2{s6, +, -, *, /, %}
+parameters.0.type = 1
+parameters.0.name = g1[10]
+
+parameters.1.type = g3.type
+parameters.1.name = g3[10]
+
+
+var_op:
+pattern = (<variable>) *= *(<value=10>) *(\+|-|/|\*|%) *(<value=10>)
+cmd = 100
+mod = g3{NONE, +, -, *, /, %}
+parameters.0.type = 1
+parameters.0.name = g1[10]
+
+parameters.1.type = g2.type
+parameters.1.name = g2[10]
+
+parameters.2.type = g4.type
+parameters.2.name = g4[10]
+
+
+var_sys:
+pattern = (<variable>) *= *\*(a|b|c|d|e|f|return)
+cmd = 100
+mod = g2{s11, a, b, c, d, e, f, return}
+
+parameters.0.type = 1
+parameters.0.name = g1[10]
+
+
+var_rand:
+pattern = (<variable>) *= *rand\( *(<value=10>) *, *(<value=10>) *\)
+cmd = 100
+mod = 18
+parameters.0.type = 1
+parameters.0.name = g1[10]
+parameters.1.type = g2.type
+parameters.1.name = g2[10]
+parameters.2.type = g3.type
+parameters.2.name = g3[10]
+
+
+var_in/decrement:
+pattern = (<variable>)(--|\+\+)
+cmd = g2{s101, ++, --}
+parameters.0.type = 1
+parameters.0.name = g1[10]
+
+
+io.print_val:
+pattern = io\.print\[(int|p\.str)\] (<value=10>)
+cmd = 200
+mod = g1{int, p.str}
+
+parameters.0.type = g2.type
+parameters.0.name = g2[10]
+
+
+io.print_str:
+pattern = io\.print\[string\] "(<string=64>)"
+cmd = 200
+mod = 2
+
+parameters.0.type = 2
+parameters.0.name = g1[64]
+
+
+io.mem_single:
+pattern = io\.mem\[(<value=10>)\] *(<-|->|<->) *(<value=10>)
+cmd = 201
+mod = g2{->, <-, <->}
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+parameters.1.type = g3.type
+parameters.1.name = g3[10]
+
+
+io.mem_3:
+pattern = io\.mem\[(<value=10>)\]\[(<value=10>)\]\[(<value=10>)\] *(<-|->|<->) *(<value=10>)
+cmd = 201
+mod = g4{s3, ->, <-, <->}
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+parameters.1.type = g2.type
+parameters.1.name = g2[10]
+parameters.2.type = g3.type
+parameters.2.name = g3[10]
+parameters.3.type = g5.type
+parameters.3.name = g5[10]
+
+
+io.get:
+pattern = io.get\[(int|string)\]
+cmd = 202
+mod = g1{int, string}
+
+
+str.create:
+pattern = str\.create (<value=10>)
+cmd = 300
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+
+
+str.empty:
+pattern = str\.empty (<value=10>)
+cmd = 301
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+
+
+str.set_char:
+pattern = str\.set_char (<value=10>) (<value=10>) (<value=10>)
+cmd = 302
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+parameters.1.type = g2.type
+parameters.1.name = g2[10]
+parameters.2.type = g3.type
+parameters.2.name = g3[10]
+
+str.get_char:
+pattern = str\.get_char (<value=10>) (<value=10>)
+cmd = 303
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+parameters.1.type = g2.type
+parameters.1.name = g2[10]
+
+str.append:
+pattern = str\.append\[(int|char|p\.str)\] (<value=10>) (<value=10>)
+cmd = 303
+mod = g1{int, char, p.str}
+
+parameters.0.type = g2.type
+parameters.0.name = g2[10]
+parameters.1.type = g3.type
+parameters.1.name = g3[10]
+
+str.append_str:
+pattern = str\.append\[string\] (<value=10>) "(<string=64>)"
+cmd = 303
+mod = 3
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+parameters.1.type = 2
+parameters.1.name = g2[64]
+
+
+gpu.clear:
+pattern = gpu\.clear (<value=10>)
+cmd = 400
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+
+
+gpu.pixel:
+pattern = gpu\.pixel (<value=10>) (<value=10>) (<value=10>)
+cmd = 401
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+parameters.1.type = g2.type
+parameters.1.name = g2[10]
+parameters.2.type = g3.type
+parameters.2.name = g3[10]
+
+
+gpu.line:
+pattern = gpu\.line (<value=10>) (<value=10>) (<value=10>) (<value=10>) (<value=10>)
+cmd = 402
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+parameters.1.type = g2.type
+parameters.1.name = g2[10]
+parameters.2.type = g3.type
+parameters.2.name = g3[10]
+parameters.3.type = g4.type
+parameters.3.name = g4[10]
+parameters.4.type = g5.type
+parameters.4.name = g5[10]
+
+
+gpu.screen:
+pattern = gpu\.screen (<value=10>)
+cmd = 403
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+
+
+gpu.fill:
+pattern = gpu\.fill (<value=10>) (<value=10>) (<value=10>) (<value=10>) (<value=10>)
+cmd = 404
+
+parameters.0.type = g1.type
+parameters.0.name = g1[10]
+parameters.1.type = g2.type
+parameters.1.name = g2[10]
+parameters.2.type = g3.type
+parameters.2.name = g3[10]
+parameters.3.type = g4.type
+parameters.3.name = g4[10]
+parameters.4.type = g5.type
+parameters.4.name = g5[10]

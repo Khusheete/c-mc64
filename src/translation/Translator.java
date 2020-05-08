@@ -55,7 +55,7 @@ public class Translator {
         }
 
         // reading the source
-        switch (format) {
+        switch (format) { //TODO add other read
             case "nbt":
                 System.out.println(".nbt");
                 break;
@@ -69,16 +69,16 @@ public class Translator {
                     try {code = new String(src, "UTF-8");} catch (UnsupportedEncodingException e) { System.err.println(".mc64 files must be encoded in UTF-8"); System.exit(1); }
                     String[] lines = code.split("[\n|\r|\r\n]");
                     if (lines.length > 1024) throw new RuntimeException("The mc64 computer can have 1024 lines of code max");
-
                     for (int i = 0; i < lines.length; i++) {
                         lines[i] = lines[i].trim();
                         if (lines[i].isBlank()) continue;
                         try {
-                        System.out.println(parseLine(lines[i]));
-                        program.set("" + i, parseLine(lines[i]));
+                            System.out.println(parseLine(lines[i]));
+                            program.set("" + i, parseLine(lines[i]));
                         } catch (Exception e) {
-                            System.err.println("Error line " + i + ":\n" + "\"" + lines[i] + "\"");
-                            System.err.println(e.getMessage());
+                            System.err.println("Error line " + (i + 1) + ":\n" + "\"" + lines[i] + "\"");
+                            //System.err.println(e.getMessage());
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -99,13 +99,16 @@ public class Translator {
      * @return the command as an TagCompound
      */
     private static TagCompound parseLine(String line) {
-
-        // TODO use the lineParsers
-        
-        return null;
+        for (LineParser l : parsers) {
+            TagCompound result = l.parse(line);
+            if (result != null) {
+                return result;
+            }
+        }
+        throw new RuntimeException("Syntax error");
     }
 
-    private static Pattern lineParser = Pattern.compile("(\\p{Alnum}+:.*?)\\p{Alnum}+:", Pattern.DOTALL);
+    private static Pattern lineParser = Pattern.compile("(\\p{Alnum}+:.*?)(?=\\p{Alnum}+:|\\z)", Pattern.DOTALL);
     private static boolean setupDone = false;
     private static List<LineParser> parsers;
 
@@ -139,7 +142,6 @@ public class Translator {
         Matcher m = lineParser.matcher(src);
         
         while (m.find()) {
-            System.out.println("yo"); //TODO pattern not right
             parsers.add(new LineParser(m.group(1), cmd));
         }
     }
