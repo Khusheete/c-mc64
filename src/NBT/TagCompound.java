@@ -57,11 +57,17 @@ public class TagCompound extends NbtTag {
 			for (int i = 0; i < this.value.size(); i++) {
 				NbtTag val = this.value.get(i);
 				if (tag.getName().equals(val.getName())) {
+					if (val.getId() != tag.getId() && this.getId() == tag.getId())
+						break;
 					if (val.getId() != tag.getId())
 						throw new InvalidDataType(tag.getClass(), val.getClass());
 					this.value.set(i, tag);
 					return;
 				}
+			}
+			if (tag instanceof TagCompound && this.name == tag.name) {
+				TagCompound t = (TagCompound)tag;
+				this.value = new ArrayList<NbtTag>(t.getValue());
 			}
 		} else if (value instanceof List) {
 			List<?> v = (List<?>)value;
@@ -94,7 +100,11 @@ public class TagCompound extends NbtTag {
 
 	@Override
 	public NbtTag copy() {
-		return new TagCompound(this.name, new ArrayList<NbtTag>(this.value));
+		List<NbtTag> val = new ArrayList<NbtTag>();
+		for (NbtTag tag : this.value) {
+			val.add(tag.copy());
+		}
+		return new TagCompound(this.name, val);
 
 	}
 
