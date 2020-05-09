@@ -31,9 +31,9 @@ class LineParser {
                 String value = m.group(2);
                 if (variable.compareTo("pattern") == 0) {
                     Matcher m1 = string.matcher(value);
-                    value = m1.replaceAll("\\\\p{Print}{1,$1}");
+                    value = m1.replaceAll("\\\\p{Print}{0,$1}");
                     m1 = val.matcher(value);
-                    value = m1.replaceAll("\\\\p{Alnum}{1,$1}");
+                    value = m1.replaceAll("-?\\\\p{Alnum}{1,$1}");
                     m1 = varName.matcher(value);
                     value = m1.replaceAll("\\\\p{Alpha}\\\\p{Alnum}{0,9}");
                     this.pattern = Pattern.compile(value);
@@ -98,7 +98,7 @@ class LineParser {
             } else if ((act = groupType.matcher(action)).matches()) {
                 int g = Integer.parseInt(act.group(1));
                 if (m.groupCount() >= g) if (m.group(g) != null) {
-                    if (m.group(g).matches("\\d+"))
+                    if (m.group(g).matches("-?\\d+"))
                         result.set(value, 0);
                     else if (m.group(g).matches("\\p{Alpha}\\p{Alnum}*"))
                         result.set(value, 1);
@@ -112,8 +112,6 @@ class LineParser {
                 }
             }
         }
-        
-
         return result;
     }
 

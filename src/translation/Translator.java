@@ -19,7 +19,8 @@ public class Translator {
      * The nbt data of the program, stored the same way as in the mc64 map (storage:
      * sys PATH: program.cmd)
      */
-    TagList program;
+    private TagList program;
+    private boolean ok = true;
 
     /**
      * 
@@ -67,18 +68,17 @@ public class Translator {
                     //create a code string so we can use regex
                     String code = "";
                     try {code = new String(src, "UTF-8");} catch (UnsupportedEncodingException e) { System.err.println(".mc64 files must be encoded in UTF-8"); System.exit(1); }
-                    String[] lines = code.split("[\n|\r|\r\n]");
+                    String[] lines = code.split("(\r\n|\n|\r)");
                     if (lines.length > 1024) throw new RuntimeException("The mc64 computer can have 1024 lines of code max");
                     for (int i = 0; i < lines.length; i++) {
                         lines[i] = lines[i].trim();
                         if (lines[i].isBlank()) continue;
                         try {
-                            System.out.println(parseLine(lines[i]));
                             program.set("" + i, parseLine(lines[i]));
                         } catch (Exception e) {
                             System.err.println("Error line " + (i + 1) + ":\n" + "\"" + lines[i] + "\"");
-                            //System.err.println(e.getMessage());
-                            e.printStackTrace();
+                            System.err.println(e.getMessage());
+                            ok = false;
                         }
                     }
                 }
@@ -144,5 +144,14 @@ public class Translator {
         while (m.find()) {
             parsers.add(new LineParser(m.group(1), cmd));
         }
+    }
+
+
+    public TagList getProgramAsNbt() {
+        return this.program;
+    }
+
+    public boolean isCodeOk() {
+        return this.ok;
     }
 }

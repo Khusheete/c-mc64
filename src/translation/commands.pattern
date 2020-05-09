@@ -25,7 +25,7 @@ parameters.1.name = g3[10]
 if_cntr:
 pattern = (?:IF|if|If) *\( *cntr\.(up|down|left|right) *\)
 cmd = 6
-mod = g1{up, down, left, right}
+mod = g1{s6, up, down, left, right}
 
 
 else:
@@ -51,7 +51,7 @@ parameters.1.name = g3[10]
 while_cntr:
 pattern = (?:WHILE|while|While) *\( *cntr\.(up|down|left|right) *\)
 cmd = 7
-mod = g1{up, down, left, right}
+mod = g1{s6, up, down, left, right}
 
 
 wend:
@@ -210,13 +210,16 @@ parameters.3.name = g5[10]
 
 
 io.get:
-pattern = io.get\[(int|string)\]
+pattern = io.get\[(int|string)\] "(<string=64>)"
 cmd = 202
 mod = g1{int, string}
 
+parameters.0.type = 2
+parameters.0.name = g2[64]
+
 
 str.create:
-pattern = str\.create (<value=10>)
+pattern = str\.create (<variable>)
 cmd = 300
 
 parameters.0.type = g1.type
@@ -253,7 +256,7 @@ parameters.1.name = g2[10]
 
 str.append:
 pattern = str\.append\[(int|char|p\.str)\] (<value=10>) (<value=10>)
-cmd = 303
+cmd = 304
 mod = g1{int, char, p.str}
 
 parameters.0.type = g2.type
@@ -263,7 +266,7 @@ parameters.1.name = g3[10]
 
 str.append_str:
 pattern = str\.append\[string\] (<value=10>) "(<string=64>)"
-cmd = 303
+cmd = 304
 mod = 3
 
 parameters.0.type = g1.type
