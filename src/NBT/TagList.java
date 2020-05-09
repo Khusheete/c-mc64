@@ -104,7 +104,11 @@ public class TagList extends NbtTag {
 
 	@Override
 	public NbtTag copy() {
-		return new TagList(this.name, new ArrayList<NbtTag>(this.value));
+		List<NbtTag> val = new ArrayList<NbtTag>();
+		for (NbtTag tag : this.value) {
+			val.add(tag.copy());
+		}
+		return new TagList(this.name, val);
 	}
 
 	@Override
