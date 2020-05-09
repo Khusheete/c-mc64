@@ -17,6 +17,7 @@ import java.util.regex.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipException;
 
+import interpreter.Program;
 import translation.Translator;
 
 
@@ -27,7 +28,6 @@ class Main {
     private static String version = "1.1.2";
 
     public static void main(String args[]) {
-        //System.out.println(java.util.stream.Stream.of(args).reduce("mc64", (x, y) -> x + " " + y));
         if (args.length == 0) {
             showHelp();
             return;
@@ -61,16 +61,17 @@ class Main {
             //get the Translator
             Translator trans = new Translator(src, ext);
 
-            if (mode.compareTo("interpret") == 0) {
+            if (trans.isCodeOk())
+                if (mode.compareTo("interpret") == 0) {
+                    Program prog = new Program(trans.getProgramAsNbt());
+                    prog.run();
+                } else if (mode.compareTo("verify") == 0) {
+                    
+                    
+                    System.exit(0);
+                } else if (mode.compareTo("compile") == 0) {
                 
-                
-            } else if (mode.compareTo("verify") == 0) {
-                
-                
-                System.exit(0);
-            } else if (mode.compareTo("compile") == 0) {
-
-            }
+                }
 
         }
     }
