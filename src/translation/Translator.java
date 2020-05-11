@@ -163,6 +163,7 @@ public class Translator {
         case "mcfunction":
             String result = "data modify storage sys program.cmd set value ";
             result += this.getProgramAsNbt();
+            result += "\n" + "function sys:io/console/program/tick";
             return result.getBytes();
         case "mc64":
             break;
