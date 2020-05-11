@@ -154,4 +154,21 @@ public class Translator {
     public boolean isCodeOk() {
         return this.ok;
     }
+
+
+    public byte[] convert(String format) {
+        switch (format) {
+        case "nbt":
+            break;
+        case "mcfunction":
+            String result = "data modify storage sys program.cmd set value ";
+            result += this.getProgramAsNbt();
+            return result.getBytes();
+        case "mc64":
+            break;
+        case "mc64b":
+            break;
+        }
+        return null;
+    }
 }

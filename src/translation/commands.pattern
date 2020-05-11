@@ -3,6 +3,7 @@ pattern = //(<string=100>)
 cmd = 1
 parameters.0.type = 2
 parameters.0.name = g1[100]
+parameters.0.value = g1.value
 
 
 decl:
@@ -10,6 +11,7 @@ pattern = decl (<variable>)
 cmd = 2
 parameters.0.type = 2
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 
 if:
@@ -17,9 +19,11 @@ pattern = (?:IF|if|If) *\( *(<value=10>) *(=|>|<|>=|<=|!=) *(<value=10>) *\)
 cmd = 6
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 mod = g2{>, >=, =, !=, <=, <}
 parameters.1.type = g3.type
 parameters.1.name = g3[10]
+parameters.1.value = g3.value
 
 
 if_cntr:
@@ -43,9 +47,11 @@ pattern = (?:WHILE|while|While) *\( *(<value=10>) *(=|>|<|>=|<=|!=) *(<value=10>
 cmd = 7
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 mod = g2{>, >=, =, !=, <=, <}
 parameters.1.type = g3.type
 parameters.1.name = g3[10]
+parameters.1.value = g3.value
 
 
 while_cntr:
@@ -64,6 +70,7 @@ pattern = (?:WAIT|Wait|wait) (<value=10>)
 cmd = 11
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 func:
 pattern = (<variable>) *\( *(?:(\*a)?(?: *, *(\*b)(?: *, *(\*c)(?: *, *(\*d)(?: *, *(\*e)(?: *, *(\*f))?)?)?)?)?) *\)
@@ -77,12 +84,14 @@ mod = g6 -> 5
 mod = g7 -> 6
 parameters.0.type = 2
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 return:
 pattern = (?:RETURN|Return|return) (<value=10>)
 cmd = 12
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 call:
 pattern = (?:CALL|call|Call) (<variable>) *\( *(<value=10>)?(?: *, *(<value=10>))?(?: *, *(<value=10>))?(?: *, *(<value=10>))?(?: *, *(<value=10>))?(?: *, *(<value=10>))? *\)
@@ -96,19 +105,26 @@ mod = g6 -> 5
 mod = g7 -> 6
 parameters.0.type = 2
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 parameters.1.type = g2.type
 parameters.1.name = g2[10]
+parameters.1.value = g2.value
 parameters.2.type = g3.type
 parameters.2.name = g3[10]
+parameters.2.value = g3.value
 parameters.3.type = g4.type
 parameters.3.name = g4[10]
+parameters.3.value = g4.value
 parameters.4.type = g5.type
 parameters.4.name = g5[10]
+parameters.4.value = g5.value
 parameters.5.type = g6.type
 parameters.5.name = g6[10]
+parameters.5.value = g6.value
 parameters.6.type = g7.type
 parameters.6.name = g7[10]
+parameters.6.value = g7.value
 
 
 var_eq:
@@ -118,9 +134,11 @@ mod = 0
 mod = g2{s6, +, -, *, /, %}
 parameters.0.type = 1
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 parameters.1.type = g3.type
 parameters.1.name = g3[10]
+parameters.1.value = g3.value
 
 
 var_op:
@@ -129,12 +147,15 @@ cmd = 100
 mod = g3{NONE, +, -, *, /, %}
 parameters.0.type = 1
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 parameters.1.type = g2.type
 parameters.1.name = g2[10]
+parameters.1.value = g2.value
 
 parameters.2.type = g4.type
 parameters.2.name = g4[10]
+parameters.2.value = g4.value
 
 
 var_sys:
@@ -144,6 +165,7 @@ mod = g2{s11, a, b, c, d, e, f, return}
 
 parameters.0.type = 1
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 
 var_rand:
@@ -152,10 +174,13 @@ cmd = 100
 mod = 18
 parameters.0.type = 1
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 parameters.1.type = g2.type
 parameters.1.name = g2[10]
+parameters.1.value = g2.value
 parameters.2.type = g3.type
 parameters.2.name = g3[10]
+parameters.2.value = g3.value
 
 
 var_in/decrement:
@@ -163,6 +188,7 @@ pattern = (<variable>)(--|\+\+)
 cmd = g2{s101, ++, --}
 parameters.0.type = 1
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 
 io.print_val:
@@ -172,6 +198,7 @@ mod = g1{int, p.str}
 
 parameters.0.type = g2.type
 parameters.0.name = g2[10]
+parameters.0.value = g2.value
 
 
 io.print_str:
@@ -181,6 +208,7 @@ mod = 2
 
 parameters.0.type = 2
 parameters.0.name = g1[64]
+parameters.0.value = g1.value
 
 
 io.mem_single:
@@ -190,8 +218,10 @@ mod = g2{->, <-, <->}
 
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 parameters.1.type = g3.type
 parameters.1.name = g3[10]
+parameters.1.value = g3.value
 
 
 io.mem_3:
@@ -200,13 +230,20 @@ cmd = 201
 mod = g4{s3, ->, <-, <->}
 
 parameters.0.type = g1.type
+parameters.0.value = g1.value
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 parameters.1.type = g2.type
+parameters.1.value = g2.value
 parameters.1.name = g2[10]
+parameters.1.value = g2.value
 parameters.2.type = g3.type
+parameters.2.value = g2.value
 parameters.2.name = g3[10]
+parameters.2.value = g3.value
 parameters.3.type = g5.type
 parameters.3.name = g5[10]
+parameters.3.value = g5.value
 
 
 io.get:
@@ -216,6 +253,7 @@ mod = g1{int, string}
 
 parameters.0.type = 2
 parameters.0.name = g2[64]
+parameters.0.value = g2.value
 
 
 str.create:
@@ -224,6 +262,7 @@ cmd = 300
 
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 
 str.empty:
@@ -232,6 +271,7 @@ cmd = 301
 
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 
 str.set_char:
@@ -240,10 +280,13 @@ cmd = 302
 
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 parameters.1.type = g2.type
 parameters.1.name = g2[10]
+parameters.1.value = g2.value
 parameters.2.type = g3.type
 parameters.2.name = g3[10]
+parameters.2.value = g3.value
 
 str.get_char:
 pattern = str\.get_char (<value=10>) (<value=10>)
@@ -251,8 +294,10 @@ cmd = 303
 
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 parameters.1.type = g2.type
 parameters.1.name = g2[10]
+parameters.1.value = g2.value
 
 str.append:
 pattern = str\.append\[(int|char|p\.str)\] (<value=10>) (<value=10>)
@@ -261,8 +306,10 @@ mod = g1{int, char, p.str}
 
 parameters.0.type = g2.type
 parameters.0.name = g2[10]
+parameters.0.value = g2.value
 parameters.1.type = g3.type
 parameters.1.name = g3[10]
+parameters.1.value = g3.value
 
 str.append_str:
 pattern = str\.append\[string\] (<value=10>) "(<string=64>)"
@@ -271,8 +318,10 @@ mod = 3
 
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 parameters.1.type = 2
 parameters.1.name = g2[64]
+parameters.1.value = g2.value
 
 
 gpu.clear:
@@ -281,6 +330,7 @@ cmd = 400
 
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 
 gpu.pixel:
@@ -289,10 +339,13 @@ cmd = 401
 
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 parameters.1.type = g2.type
 parameters.1.name = g2[10]
+parameters.1.value = g2.value
 parameters.2.type = g3.type
 parameters.2.name = g3[10]
+parameters.2.value = g3.value
 
 
 gpu.line:
@@ -301,14 +354,19 @@ cmd = 402
 
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 parameters.1.type = g2.type
 parameters.1.name = g2[10]
+parameters.1.value = g2.value
 parameters.2.type = g3.type
 parameters.2.name = g3[10]
+parameters.2.value = g3.value
 parameters.3.type = g4.type
 parameters.3.name = g4[10]
+parameters.3.value = g4.value
 parameters.4.type = g5.type
 parameters.4.name = g5[10]
+parameters.4.value = g5.value
 
 
 gpu.screen:
@@ -317,6 +375,7 @@ cmd = 403
 
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 
 
 gpu.fill:
@@ -325,11 +384,16 @@ cmd = 404
 
 parameters.0.type = g1.type
 parameters.0.name = g1[10]
+parameters.0.value = g1.value
 parameters.1.type = g2.type
 parameters.1.name = g2[10]
+parameters.1.value = g2.value
 parameters.2.type = g3.type
 parameters.2.name = g3[10]
+parameters.2.value = g3.value
 parameters.3.type = g4.type
 parameters.3.name = g4[10]
+parameters.3.value = g4.value
 parameters.4.type = g5.type
 parameters.4.name = g5[10]
+parameters.4.value = g5.value

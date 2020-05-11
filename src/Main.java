@@ -13,6 +13,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 
+import java.io.FileOutputStream;
+import java.io.BufferedOutputStream;
+
 import java.util.regex.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipException;
@@ -61,18 +64,25 @@ class Main {
             //get the Translator
             Translator trans = new Translator(src, ext);
 
-            if (trans.isCodeOk())
+            if (trans.isCodeOk()) {
+                Program prog = new Program(trans.getProgramAsNbt());
                 if (mode.compareTo("interpret") == 0) {
-                    Program prog = new Program(trans.getProgramAsNbt());
+                    
                     prog.run();
                 } else if (mode.compareTo("verify") == 0) {
                     
                     
                     System.exit(0);
                 } else if (mode.compareTo("compile") == 0) {
-                
+                    File out = new File(output);
+                    ext = output.split(".*\\.")[1];
+                    try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(out))) {
+                        stream.write(trans.convert(ext));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-
+            }
         }
     }
 

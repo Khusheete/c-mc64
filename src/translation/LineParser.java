@@ -51,6 +51,7 @@ class LineParser {
     private static final Pattern intGroupArray = Pattern.compile("g(\\d+)\\{(.*)\\}");
 
     private static final Pattern groupType = Pattern.compile("g(\\d+)\\.type");
+    private static final Pattern groupValue = Pattern.compile("g(\\d+)\\.value");
     private static final Pattern ifGroup = Pattern.compile("g(\\d+) *-> *(\\d+)");
 
     public TagCompound parse(String line) {
@@ -109,6 +110,12 @@ class LineParser {
                 int g = Integer.parseInt(act.group(1));
                 if (m.groupCount() >= g) if (m.group(g) != null) {
                     result.set(value, Integer.parseInt(act.group(2)));
+                }
+            } else if ((act = groupValue.matcher(action)).matches()) {
+                int g = Integer.parseInt(act.group(1));
+                if (m.groupCount() >= g) if (m.group(g) != null) {
+                    if (m.group(g).matches("-?\\d+"))
+                        result.set(value, Integer.parseInt(m.group(g)));
                 }
             }
         }
