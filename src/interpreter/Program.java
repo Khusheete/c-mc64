@@ -494,7 +494,7 @@ public class Program {
                                     mem.setLocal(val, mem.getGlobal(p0));
                                     break;
                                 case 1: // [] <-
-                                    mem.setGlobal(p0, mem.getLocal(val));
+                                    mem.setGlobal(p0, getValue(p[1]));
                                     break;
                                 case 2: // [] <->
                                     {
@@ -507,7 +507,7 @@ public class Program {
                                     mem.setLocal(val, mem.getGlobal(p0, p1, p2));
                                     break;
                                 case 4: // [][][] <-
-                                    mem.setGlobal(p0, p1, p2, mem.getLocal(val));
+                                    mem.setGlobal(p0, p1, p2, getValue(p[3]));
                                     break;
                                 case 5: // [][][] <->
                                     {
