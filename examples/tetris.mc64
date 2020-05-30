@@ -1,0 +1,133 @@
+
+decl end
+decl i
+decl j
+
+decl x
+decl y
+
+decl next
+main()
+    io.print[string] "loading..."
+    gpu.clear 10
+    gpu.fill 13 13 63 113 0
+
+    gpu.fill 79 14 111 36 15
+    gpu.fill 80 15 110 35 0
+    gpu.fill 85 20 105 30 0
+    i = 0
+    while (i < 10)
+        j = 0
+        while (j < 20)
+            io.mem[0][i][j] <- 0
+            j++
+        wend
+        i++
+    wend
+    call setupMem()
+
+    //choose a random tetromino
+    call cTetromino()
+
+    io.print[string] "game starting in"
+    i = 3
+    while (i > 0)
+        io.print[int] i
+        i--
+        wait 20
+    wend
+    io.print[string] "start"
+
+    while (end = 0)
+        if (cntr.up)
+            call cTetromino()
+            wait 5
+        ifend
+    wend
+return 0
+
+
+
+decl i
+setupMem()
+    //setup the tetrominos
+    i = 0
+    while (i < 4)
+        io.mem[1][i][0] <- 1
+        i++
+    wend
+    i++
+    io.mem[1][i][0] <- 1
+    i++
+    io.mem[1][i][0] <- 1
+    i += 2
+    while (i < 12)
+        io.mem[1][i][0] <- 1
+        i++
+    wend
+    i += 1
+    io.mem[1][i][0] <- 1
+    i++
+    io.mem[1][i][0] <- 1
+    i += 2
+    while (i < 19)
+        io.mem[1][i][0] <- 1
+        i++
+    wend
+
+    i = 5
+    io.mem[1][i][1] <- 1
+    i++
+    io.mem[1][i][1] <- 1
+    i += 2
+    io.mem[1][i][1] <- 1
+    i += 4
+    io.mem[1][i][1] <- 1
+    i++
+    io.mem[1][i][1] <- 1
+    i += 4
+    io.mem[1][i][1] <- 1
+
+return 0
+
+decl i
+decl j
+decl x
+decl y
+decl x1
+decl y1
+decl val
+decl id
+dTetromino()
+    io.mem[0][10][0] -> id
+    gpu.fill 85 20 105 30 0
+
+    while (i < 4)
+        j = 0
+        while (j < 2)
+            x = id * 4
+            x += i
+            io.mem[1][x][j] -> val
+            x = i * 5
+            x += 85
+            y = j * 5
+            y += 20
+
+            x1 = x + 5
+            y1 = y + 5
+            if (val = 1)
+                gpu.fill x y x1 y1 7
+            ifend
+            j++
+        wend
+        i++
+    wend
+return 0
+
+
+decl i
+cTetromino()
+    i = rand(0, 4)
+    io.mem[0][10][0] <- i
+    call dTetromino()
+return 0

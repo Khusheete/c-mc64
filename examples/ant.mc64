@@ -1,0 +1,56 @@
+
+//dummy variable for the loop
+decl i
+
+//values for the turtle
+decl x
+decl y
+//the rotation: 
+//0: up
+//1: right
+//2: down
+//3: left
+decl r
+
+//mem out variable
+decl m
+ant()
+    x = 64
+    y = 64
+    while (i < 10000)
+    //reading from memory
+    io.mem[0][x][y] -> m
+
+    //changin the rotation
+    if (m = 0)
+        r++
+        m = 1
+        gpu.pixel x y 15
+    else
+        r += 3
+        m = 0
+        gpu.pixel x y 0
+    ifend
+    r %= 4
+
+    //writing the new state
+    io.mem[0][x][y] <- m
+
+    //mooving the turtle
+    if (r = 0)
+        x++
+    ifend
+    if (r = 1)
+        y++
+    ifend
+    if (r = 2)
+        x--
+    ifend
+    if (r = 3)
+        y--
+    ifend
+
+    wait 0
+    i++
+    wend
+return 0

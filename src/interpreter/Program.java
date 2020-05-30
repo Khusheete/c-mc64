@@ -36,19 +36,129 @@ public class Program {
 
     private Memory mem;
     private int pointer;
+
+    private boolean ok;
     
     public Program(TagList prg) {
+        //setting up the program to run
         List<NbtTag> p = prg.getValue();
         program = new Command[1024];
         for (int i = 0; i < p.size(); i++) {
             TagCompound cmd = (TagCompound)p.get(i);
             program[i] = new Command(cmd);
         }
+        //verifying and "compiling" the program
         //TODO verify the program
+        ok = true;
+        Stack<String> loops = new Stack<String>();
+        Stack<Integer> loopLine = new Stack<Integer>();
+        Stack<String> variables = new Stack<String>();
+        List<String> functions = new ArrayList<String>();
+
+        for (int i = 0; i < program.length; i++) {
+            int cmd = program[i].getCommand();
+            //int mod = program[i].getMod();
+
+            try {
+                //verifying the command is in a valid place
+                if (cmd != 0 && cmd != 1 && cmd != 2 && cmd != 3 && loops.isEmpty()) {
+                    throw new InterpreterException("Command must be in a function");
+                }
+
+                //check that variables exists
+                for (Parameter parameter : program[i].getParameters()) {
+                    if (parameter.getType() == 1) {
+                        if (!variables.contains(parameter.getName()) && !parameter.getName().startsWith("*")) {
+                            throw new InterpreterException("undefined variable " + parameter.getName());
+                        }
+                    }
+                }
+
+                switch (cmd) {
+                    case 2: //decl
+                        {
+                            if (!loops.isEmpty())
+                                throw new InterpreterException("decl statment within function");
+                            variables.add(program[i].getParameters()[0].getName());
+                        }
+                        break;
+                    case 3: //function
+                        if (!loops.isEmpty())
+                            throw new InterpreterException("cannot declare function inside a function");
+                        loops.push("func-" + program[i].getParameters()[0].getName());
+                        functions.add(program[i].getParameters()[0].getName());
+                        break;
+                    case 12: //return
+                        if (loops.peek().startsWith("func-")) {
+                            while (!variables.isEmpty()) //remove the local variables
+                                variables.pop();
+                            loops.pop();
+                        } else {
+                            //TODO remove statment when return in the middle of a function will be possible
+                            throw new InterpreterException("return must be at the end of a function, not after a " + loops.peek());
+                        }
+                        break;
+                    case 6: //if
+                        loops.push("if");
+                        loopLine.push(i);
+                        break;
+                    case 4: //else
+                        {
+                            String last = loops.peek();
+                            if (last.startsWith("if")) {
+                                if (last.equals("if-else")) {
+                                    throw new InterpreterException("there can be only one else statment per if");
+                                } else {
+                                    int index = loopLine.pop();
+                                    program[index].getParameters()[2].setValue(i);
+                                    loopLine.push(i);
+                                    loops.pop();
+                                    loops.push("if-else");
+                                }
+                            } else {
+                                throw new InterpreterException("else statment must be placed after an if statment not " + last);
+                            }
+                        }
+                        break;
+                    case 8: //ifend
+                        {
+                            String last = loops.peek();
+                            if (last.startsWith("if")) {
+                                int index = loopLine.pop();
+                                program[index].getParameters()[2].setValue(i);
+                                loops.pop();
+                            } else {
+                                throw new InterpreterException("ifend statment must be placed after an if statment not " + last);
+                            }
+                        }
+                        break;
+                    case 7: //while
+                        loops.push("while");
+                        loopLine.push(i);
+                        break;
+                    case 9: //wend
+                        String last = loops.peek();
+                        if (last.startsWith("while")) {
+                            int index = loopLine.pop();
+                            program[i].getParameters()[0].setValue(index - 1);
+                            program[index].getParameters()[2].setValue(i);
+                            loops.pop();
+                        } else {
+                            throw new InterpreterException("wend statment must be placed after a while statment not " + last);
+                        }
+                        break;
+                }
+            } catch (InterpreterException e) {
+                System.err.println("Error line " + (i + 1));
+                System.err.println("\t" + e.getMessage());
+                ok = false;
+            }
+        }
     }
 
     public void run() {
-
+        if (!ok)
+            return;
         Screen surface = new Screen();
         surface.setVisible(true);
         //setting up the values
@@ -78,7 +188,7 @@ public class Program {
                 int mod = program[pointer].getMod();
                 Parameter[] p = program[pointer].getParameters();
                 switch (cmd) {
-                    case 0, 1:
+                    case 0, 1, 8:
                         break;
                     case 6: //if
                         {
@@ -115,60 +225,13 @@ public class Program {
                             }
                             //if expression is false
                             if (!s) {
-                                int ifLoop = 1;
-                                int tempP = pointer + 1;
-                                //skip until the corresponding ifend or else
-                                while (ifLoop > 0) {
-                                    if (++pointer >= program.length) {
-                                        throw new InterpreterException("No ifend found for if line " + tempP);
-                                    }
-                                    if (program[pointer].getCommand() == 6) { //if
-                                        ifLoop++;
-                                    }
-                                    if (program[pointer].getCommand() == 4 && ifLoop == 1) { //else
-                                        break;
-                                    }
-                                    if (program[pointer].getCommand() == 8) { //ifend
-                                        ifLoop--;
-                                    }
-                                }
-                            }
-                            inIf.push(inIf.pop() + 1);
-                        }
-                        break;
-                    case 4:
-                        {
-                            //verify if there was an if before
-                            if (inIf.peek() == 0) {
-                                throw new InterpreterException("No if before else");
-                            }
-                            inIf.push(inIf.pop() - 1);
-                            int ifLoop = 1;
-                            int tempP = pointer + 1;
-                            //skip until the corresponding endif
-                            while (ifLoop > 0) {
-                                if (++pointer >= program.length) {
-                                    throw new InterpreterException("No ifend found for else line " + tempP);
-                                }
-                                if (program[pointer].getCommand() == 6) { //if
-                                    ifLoop++;
-                                }
-                                if (program[pointer].getCommand() == 4 && ifLoop == 1) { //else
-                                    throw new InterpreterException("Double else line first line:" + tempP);
-                                }
-                                if (program[pointer].getCommand() == 8) { //ifend
-                                    ifLoop--;
-                                }
+                                pointer = p[2].getValue();
                             }
                         }
                         break;
-                    case 8: //endif
+                    case 4: //else
                         {
-                            //verify if there was an if before
-                            if (inIf.peek() == 0) {
-                                throw new InterpreterException("No if before ifend");
-                            }
-                            inIf.push(inIf.pop() - 1);
+                            pointer = p[2].getValue();
                         }
                         break;
                     case 200: //io.print[~]
@@ -221,34 +284,13 @@ public class Program {
                             }
                             //if not true
                             if (!s) {
-                                int inLoop = 1;
-                                int tempP = pointer + 1;
-                                while (inLoop > 0) {
-                                    if (++pointer >= program.length) {
-                                        throw new InterpreterException("No wend found for while loop line " + tempP);
-                                    }
-                                    if (program[pointer].getCommand() == 7) { //while
-                                        inLoop++;
-                                    }
-                                    if (program[pointer].getCommand() == 9) { //wend
-                                        inLoop--;
-                                    }
-                                }
-                            } else { //store the position of this while
-                                Stack<Integer> w = inWhile.peek();
-                                w.push(pointer);
+                                pointer = p[2].getValue();
                             }
                         }
                         break;
                     case 9: //wend
                         {   
-                            //verify that there is a while before
-                            Stack<Integer> w = inWhile.peek();
-                            if (w.isEmpty()) {
-                                throw new InterpreterException("No while before wend");
-                            }
-                            //go just before the corresponding while
-                            pointer = w.pop() - 1;
+                            pointer = p[0].getValue();
                         }
                         break;
                     case 11: //wait
@@ -595,7 +637,7 @@ public class Program {
 
     private int getValue(Parameter p) {
         if (p.getType() == 0) {
-            return Integer.parseInt(p.getName());
+            return p.getValue();
         } else if (p.getType() == 1) {
             return mem.getLocal(p.getName());
         }

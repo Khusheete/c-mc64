@@ -28,7 +28,6 @@ class Main {
 
     private static String output = "prog.mcfunction";
     private static String mode = "interpret";
-    private static String version = "1.1.2";
 
     public static void main(String args[]) {
         if (args.length == 0) {

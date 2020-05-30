@@ -124,8 +124,8 @@ class LineParser {
 
 
     private List<TagString> stringToList(String str, int length) {
-        if (str.length() >= length)
-            throw new RuntimeException("length of " + str.length() + "but max length is " + length + " in " + name);
+        if (str.length() > length)
+            throw new RuntimeException("length of " + str.length() + " but max length is " + length + " in " + name);
         List<TagString> result = new ArrayList<TagString>();
         for (char c : str.toCharArray()) {
             result.add(new TagString("" + c));
