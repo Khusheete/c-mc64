@@ -48,7 +48,6 @@ public class Program {
             program[i] = new Command(cmd);
         }
         //verifying and "compiling" the program
-        //TODO verify the program
         ok = true;
         Stack<String> loops = new Stack<String>();
         Stack<Integer> loopLine = new Stack<Integer>();
