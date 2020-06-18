@@ -66,13 +66,13 @@ class Main {
             if (trans.isCodeOk()) {
                 Program prog = new Program(trans.getProgramAsNbt());
                 if (mode.compareTo("interpret") == 0) {
-                    
+                    //run the program
                     prog.run();
                 } else if (mode.compareTo("verify") == 0) {
-                    
-                    
+                    //we already verifyed the program (when creating the object "prog") so exit (just in case we add something after)
                     System.exit(0);
                 } else if (mode.compareTo("compile") == 0) {
+                    //compile the program
                     File out = new File(output);
                     ext = output.split(".*\\.")[1];
                     try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(out))) {
