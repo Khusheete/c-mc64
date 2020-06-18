@@ -58,15 +58,15 @@ public class Translator {
         // reading the source
         switch (format) { //TODO add other read
             case "nbt":
+                System.out.println(".nbt");
+                break;
+            case "mc64b":
                 try {
                     this.program = (TagList)NbtTag.parse(src);
                 } catch (Exception e) {
-                    System.err.println("Program in NBT format must be a TagList");
+                    System.err.println("Program in mc64b format must be a TagList");
                     System.exit(1);
                 }
-                break;
-            case "mc64b":
-                System.out.println(".mc64b");
                 break;
             case "mc64":
                 {
@@ -164,7 +164,7 @@ public class Translator {
     public byte[] convert(String format) {
         switch (format) {
         case "nbt":
-            return this.program.toNBTFormat();
+            break;
         case "mcfunction":
             String result = "data modify storage sys program.cmd set value ";
             result += this.getProgramAsNbt();
@@ -173,7 +173,7 @@ public class Translator {
         case "mc64":
             break;
         case "mc64b":
-            break;
+            return this.program.toNBTFormat();
         }
         return null;
     }
