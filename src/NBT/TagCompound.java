@@ -88,7 +88,7 @@ public class TagCompound extends NbtTag {
 	public NbtTag get(String path) {
 		String[] pth = path.split("\\.", 2);
 		for (NbtTag tag : this.value) {
-			if (tag.getName() == pth[0]) {
+			if (tag.getName().compareTo(pth[0]) == 0) {
 				if (pth.length == 2)
 					return (NbtTag)tag.get(pth[1]);
 				else
