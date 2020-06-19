@@ -56,12 +56,11 @@ public class Translator {
         }
 
         // reading the source
-        //import from world
         switch (format) { //TODO add other read
-            case "nbt":
+            case "nbt": // reading structure file
                 this.program = (TagList)NbtTag.parse(src).get("blocks.0.nbt.Items.0.tag.program");
                 break;
-            case "mc64b":
+            case "mc64b": // reading from the mc64 program in nbt format
                 try {
                     this.program = (TagList)NbtTag.parse(src);
                 } catch (Exception e) {
@@ -69,7 +68,7 @@ public class Translator {
                     System.exit(1);
                 }
                 break;
-            case "mc64":
+            case "mc64": //reading from mc64 code
                 {
                     //create a code string so we can use regex
                     String code = "";
@@ -89,7 +88,7 @@ public class Translator {
                     }
                 }
                 break;
-            case "mcfunction":
+            case "dat": //reading from command_storage_minecraft.dat (directly from storage memory)
                 System.out.println(".mcfunction");
                 break;
             default:
