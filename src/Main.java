@@ -76,7 +76,7 @@ class Main {
                     //compile the program
                     File out = new File(output);
                     ext = output.split(".*\\.")[1];
-                    if (ext.compareTo("nbt") == 0)
+                    if (ext.compareTo("nbt") == 0 || ext.compareTo("mc64b") == 0)
                         try (BufferedOutputStream stream = new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(out)))) {
                             stream.write(trans.convert(ext));
                         } catch (IOException e) {
