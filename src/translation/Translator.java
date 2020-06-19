@@ -165,7 +165,45 @@ public class Translator {
     public byte[] convert(String format) {
         switch (format) {
         case "nbt":
-            break;
+            //initialize the structure block data
+            TagCompound struct = (TagCompound)NbtTag.parse(
+                "{" + 
+                    "DataVersion:2230," +
+                    "size: [1, 1, 1]," +
+                    "palette: [" +
+                        "{" +
+                            "Name:\"minecraft:chest\"," +
+                            "Properties: {" +
+                                "waterlogged: \"false\"," +
+                                "facing: \"west\"," + 
+                                "type: \"single\"" +
+                            "}" +
+                        "}" +
+                    "]," +
+                    "blocks: [" +
+                        "{" +
+                            "state: 0," +
+                            "pos: [0, 0, 0]," +
+                            "nbt: {" +
+                                "Items: [" +
+                                    "{" +
+                                        "Count: 1b," +
+                                        "Slot: 13b," +
+                                        "id: \"minecraft:book\"," +
+                                        "tag: {" +
+                                            "program: []" +
+                                        "}" +
+                                    "}" +
+                                "]" +
+                            "}" +
+                        "}" +
+                    "]," +
+                    "entities: []" +
+                "}"
+            );
+            //add the program data
+            struct.set("blocks.0.nbt.Items.0.tag.program", this.program.getValue());
+            return struct.toNBTFormat();
         case "mcfunction":
             String result = "data modify storage sys program.cmd set value ";
             result += this.getProgramAsNbt();

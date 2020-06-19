@@ -18,6 +18,7 @@ import java.io.BufferedOutputStream;
 
 import java.util.regex.*;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipException;
 
 import interpreter.Program;
@@ -75,11 +76,18 @@ class Main {
                     //compile the program
                     File out = new File(output);
                     ext = output.split(".*\\.")[1];
-                    try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(out))) {
-                        stream.write(trans.convert(ext));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    if (ext.compareTo("nbt") == 0)
+                        try (BufferedOutputStream stream = new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(out)))) {
+                            stream.write(trans.convert(ext));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    else
+                        try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(out))) {
+                            stream.write(trans.convert(ext));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                 }
             }
         }
