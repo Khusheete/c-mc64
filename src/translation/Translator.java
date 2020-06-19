@@ -56,9 +56,10 @@ public class Translator {
         }
 
         // reading the source
+        //import from world
         switch (format) { //TODO add other read
             case "nbt":
-                System.out.println(".nbt");
+                this.program = (TagList)NbtTag.parse(src).get("blocks.0.nbt.Items.0.tag.program");
                 break;
             case "mc64b":
                 try {
