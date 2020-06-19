@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.Stack;
 import java.util.regex.*;
 
 public abstract class NbtTag {
@@ -248,7 +248,7 @@ public abstract class NbtTag {
 				longs[i] = Long.parseLong(vals[i]);
 			return new TagLongArray(longs);
 		} else if ((m = pArray.matcher(nbt)).matches()) {
-			String[] vals = m.group(1).split(",");
+			String[] vals = NbtTag.splitValues(m.group(1));
 			NbtTag[] tags = new NbtTag[vals.length];
 			for (int i = 0; i < vals.length; i++) {
 				tags[i] = NbtTag.parse(vals[i]);
@@ -262,34 +262,47 @@ public abstract class NbtTag {
 	}
 
 	private static String[] splitValues(String nbt) {
-		char skipUntil = ' ';
+		if (nbt.isBlank())
+			return new String[0];
+		
+		Stack<Character> skipUntil = new Stack<Character>();
 		int lastIndex = 0;
 		List<String> result = new ArrayList<String>();
-		for (int i = 0; i < nbt.length(); i++) {
-			if (nbt.charAt(i) == '\"')
-				skipUntil = '\"';
-			if (nbt.charAt(i) == '\'')
-				skipUntil = '\'';
-			if (nbt.charAt(i) == '[')
-				skipUntil = ']';
-			if (nbt.charAt(i) == '{')
-				skipUntil = '}';
-			while (skipUntil != ' ') {
-				if (++i >= nbt.length())
-					throw new InvalidNbtException("Missing enclosing " + skipUntil);
-				if (nbt.charAt(i) == skipUntil) {
-					if (i > 0) {
-						if (nbt.charAt(i-1) != '\\')
-							skipUntil = ' ';
-					} else {
-						skipUntil = ' ';
-					}
-				}
-			}
+		for (int i = 0; i < nbt.length();) {
 			if (nbt.charAt(i) == ',') {
 				result.add(nbt.substring(lastIndex, i));
 				lastIndex = i + 1;
 			}
+			do {
+				if (nbt.charAt(i) == '\"') {
+					if (i > 0) {
+						if (nbt.charAt(i-1) != '\\')
+							skipUntil.push('\"');
+					} else skipUntil.push('\"');
+				}
+				if (nbt.charAt(i) == '\'') {
+					if (i > 0) {
+						if (nbt.charAt(i-1) != '\\')
+							skipUntil.push('\'');
+					} else skipUntil.push('\'');
+				}
+				if (nbt.charAt(i) == '[')
+					skipUntil.push(']');
+				if (nbt.charAt(i) == '{')
+					skipUntil.push('}');
+				if (skipUntil.size() > 0) {
+					if (nbt.charAt(i) == skipUntil.peek()) {
+						if (i > 0) {
+							if (nbt.charAt(i-1) != '\\')
+								skipUntil.pop();
+						} else {
+							skipUntil.pop();
+						}
+					}
+				}
+				if (++i >= nbt.length() && skipUntil.size() > 0)
+						throw new InvalidNbtException("Missing enclosing " + skipUntil);
+			} while (skipUntil.size() != 0);
 		}
 		result.add(nbt.substring(lastIndex, nbt.length()));
 		String[] r = new String[result.size()];
