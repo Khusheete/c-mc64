@@ -1,0 +1,146 @@
+
+//
+
+decl x
+decl lx
+
+decl mv
+
+decl asmv
+
+
+decl i
+decl j
+decl k
+
+decl r
+
+decl lost
+
+main()
+    io.print[string] "loading..."
+    gpu.clear 0
+    x = 16
+    
+    call updatePos(x, 31, x, 31, 15)
+
+    i = 0
+    while (i < 32)
+        io.mem[i] <- -1
+        i++
+    wend
+
+
+    io.print[string] "Start !"
+
+    while (lost = 0)
+        if (mv = 0)
+            lx = x
+            if (x > 0)
+            if (cntr.left)
+                x -= 1
+            ifend
+            ifend
+            if (x < 31)
+            if (cntr.right)
+                x += 1
+            ifend
+            ifend
+
+            if (lx != x)
+                call updatePos(lx, 31, x, 31, 15)
+                mv += 2
+            ifend
+        else
+            mv--
+        ifend
+
+        if (asmv = 0)
+            i = 0
+            while (i < 32)
+                io.mem[i] -> j
+                if (j != -1)
+                    k = j + 1
+
+                    call updatePos(i, j, i, k, 15)
+
+                    if (k = 31)
+                        if (i != x)
+                            call fill(i, 31, 0)
+                            k = -1
+                        else
+                            lost = 1
+                            call fill(i, 31, 2)
+                            k = -1
+                        ifend
+                    ifend
+
+                    io.mem[i] <- k
+                else
+                    r = rand(0, 100)
+                    if (r < 10)
+                        io.mem[i] <- 0
+                    ifend
+                ifend
+
+                i++
+            wend
+            //asmv += 5
+        else
+            asmv--
+        ifend
+
+        wait 1
+    wend
+return 0
+
+
+decl x
+decl y
+decl c
+
+//a: prev_x
+//b: prev_y
+//c: new_x
+//d: new_y
+//e: color
+updatePos(*a, *b, *c, *d, *e)
+    //clear previous pos
+    x = *a
+    y = *b
+    call fill(x, y, 0)
+
+    //draw current pos
+    c = *e
+    x = *c
+    y = *d
+    call fill(x, y, c)
+return 0
+
+
+
+
+decl x0
+decl y0
+
+decl x1
+decl y1
+
+decl c
+
+//a: x
+//b: y
+//c: color
+fill(*a, *b, *c)
+    c = *c
+
+    x0 = *a
+    x0 *= 4
+    x1 = x0 + 4
+
+    y0 = *b
+    y0 *= 4
+    y1 = y0 + 4
+
+    gpu.fill x0 y0 x1 y1 c
+return 0
