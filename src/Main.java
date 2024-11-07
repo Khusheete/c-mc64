@@ -1,12 +1,3 @@
-/*
-    This is my first "real" program in Java
-    I learnt to program in java on my own so there might (there are) be some problems with my code
-    but this code should work with whatever (correct thing) we throw at it
-
-    My english is not the best either sorry :) 
-    + I tend to not comment my code (thought I tried to comment as much as I could)
-*/
-
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.File;
